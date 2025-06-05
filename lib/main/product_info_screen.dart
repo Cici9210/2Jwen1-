@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/api_service.dart';
 import '../data/models.dart';
+import '../shared/voice_engine.dart';
 
 class ProductInfoScreen extends StatefulWidget {
   final String areaCode;
@@ -16,6 +17,7 @@ class ProductInfoScreen extends StatefulWidget {
 
 class _ProductInfoScreenState extends State<ProductInfoScreen> {
   final ApiService _apiService = ApiService();
+  final VoiceEngine _voice = VoiceEngine();
   Area? _area;
   bool _isLoading = true;
   String? _error;
@@ -25,8 +27,8 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
     super.initState();
     _loadAreaInfo();
   }
-
-  Future<void> _loadAreaInfo() async {    try {
+  Future<void> _loadAreaInfo() async {
+    try {
       print('Searching for area code: ${widget.areaCode}');
       final area = await _apiService.getAreaInfo(widget.areaCode);
       print('Area found: $area');
@@ -34,16 +36,37 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
         _area = area;
         _isLoading = false;
         if (area == null) {
-          _error = '找不到代碼為 ${widget.areaCode} 的區域';
+          final errorMessage = '找不到代碼為 ${widget.areaCode} 的區域';
+          _error = errorMessage;
+          _voice.speak(errorMessage);
+        } else {
+          _speakAreaInfo(area);
         }
-      });
-    } catch (e) {
+      });    } catch (e) {
       print('Error in ProductInfoScreen: $e');
+      final errorMessage = '搜尋區域時發生錯誤';
       setState(() {
-        _error = '搜尋區域時發生錯誤：$e';
+        _error = errorMessage;
         _isLoading = false;
       });
+      _voice.speak(errorMessage);
     }
+  }
+  
+  Future<void> _speakAreaInfo(Area area) async {
+    String speechText = '已找到${area.name}。${area.description}。';
+    if (area.products.isNotEmpty) {
+      speechText += '此區域有${area.products.length}項商品，包括';
+      for (int i = 0; i < area.products.length; i++) {
+        final product = area.products[i];
+        speechText += '${product.name}，位於${product.location}';
+        if (i < area.products.length - 1) {
+          speechText += '，';
+        } else {
+          speechText += '。';
+        }
+      }
+    }    await _voice.speak(speechText);
   }
 
   @override
@@ -91,19 +114,31 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                     Text(
                       '描述：${_area!.description}',
                       style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '商品列表：',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    ),                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Text(
+                          '商品列表：',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.volume_up),
+                          tooltip: '語音讀取資訊',
+                          onPressed: () {
+                            if (_area != null) {
+                              _speakAreaInfo(_area!);
+                            }
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Expanded(
                       child: ListView.builder(
                         itemCount: _area!.products.length,
                         itemBuilder: (context, index) {
-                          final product = _area!.products[index];
-                          return Card(
+                          final product = _area!.products[index];                          return Card(
                             child: ListTile(
                               title: Text(product.name),
                               subtitle: Column(
@@ -112,6 +147,12 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                   Text('位置：${product.location}'),
                                   Text('描述：${product.description}'),
                                 ],
+                              ),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.volume_up),
+                                onPressed: () {
+                                  _voice.speak('${product.name}，位於${product.location}，${product.description}');
+                                },
                               ),
                             ),
                           );

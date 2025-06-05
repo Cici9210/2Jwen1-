@@ -1,0 +1,55 @@
+﻿{
+  "areas": [
+    {
+      "code": "A01",
+      "name": "生鮮蔬果區",
+      "description": "包含各種新鮮蔬菜與水果",
+      "products": [
+        {
+          "name": "蘋果",
+          "location": "A01-1",
+          "description": "新鮮紅蘋果"
+        },
+        {
+          "name": "香蕉",
+          "location": "A01-2",
+          "description": "黃香蕉"
+        }
+      ]
+    },
+    {
+      "code": "B01",
+      "name": "飲料區",
+      "description": "各式飲料",
+      "products": [
+        {
+          "name": "礦泉水",
+          "location": "B01-1",
+          "description": "純淨礦泉水"
+        },
+        {
+          "name": "咖啡",
+          "location": "B01-2",
+          "description": "現煮咖啡"
+        }
+      ]
+    },
+    {
+      "code": "C01",
+      "name": "零食區",
+      "description": "各種零食與點心",
+      "products": [
+        {
+          "name": "洋芋片",
+          "location": "C01-1",
+          "description": "原味洋芋片"
+        },
+        {
+          "name": "餅乾",
+          "location": "C01-2",
+          "description": "奶油餅乾"
+        }
+      ]
+    }
+  ]
+}

@@ -10,19 +10,35 @@ class ApiService {
     return _instance;
   }
 
-  ApiService._internal();
-  Future<void> _loadLocalData() async {
+  ApiService._internal();  Future<void> _loadLocalData() async {
     if (_localData != null) return;
 
     try {
-      final String jsonString = await rootBundle.loadString('assets/data/LocalCodeDB.json');
-      final Map<String, dynamic> jsonMap = json.decode(jsonString);
+      const String assetPath = 'assets/data/LocalCodeDB.json';
+      String jsonString;
+      try {
+        jsonString = await rootBundle.loadString(assetPath);
+      } catch (e) {
+        print('Error loading asset: $e');
+        rethrow;
+      }
       
-      _localData = jsonMap.map((key, value) => 
-        MapEntry(key, Area.fromJson(value as Map<String, dynamic>))
-      );
+      if (jsonString.isEmpty) {
+        throw Exception('JSON file is empty');
+      }
+      final Map<String, dynamic> jsonMap = json.decode(jsonString);
+      final List<dynamic> areas = jsonMap['areas'] as List<dynamic>;
+      
+      _localData = {};
+      for (final area in areas) {
+        final Area areaObj = Area.fromJson(area as Map<String, dynamic>);
+        print('Loaded area: ${areaObj.code}');
+        _localData![areaObj.code] = areaObj;
+      }
+      print('Local data loaded successfully');
     } catch (e) {
       print('Error loading local data: $e');
+      print('Stack trace: ${StackTrace.current}');
       rethrow;
     }
   }

@@ -16,11 +16,41 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '數字點點導引系統',
+  Widget build(BuildContext context) {    return MaterialApp(
+      title: '摸索點點導引系統',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF3F51B5),
+          primary: const Color(0xFF3F51B5),
+          secondary: const Color(0xFFFF9800),          surface: Colors.white,
+          surfaceContainer: const Color(0xFFF5F5F5),
+        ),
+        textTheme: const TextTheme(
+          headlineMedium: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF3F51B5),
+          ),
+          titleLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF3F51B5),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF3F51B5),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),        ),
+        cardTheme: const CardThemeData(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        ),
         useMaterial3: true,
       ),
       localizationsDelegates: const [

@@ -37,51 +37,140 @@ class _SearchByCodeScreenState extends State<SearchByCodeScreen> {
       }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('手動輸入'),
+        centerTitle: true,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: _codeController,
-                decoration: const InputDecoration(
-                  labelText: '區域代號',
-                  hintText: '例如：B12',
-                  border: OutlineInputBorder(),
-                ),
-                textCapitalization: TextCapitalization.characters,
-                style: const TextStyle(fontSize: 24),
-                validator: (value) {
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              Colors.white,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 40),
+                  const Text(
+                    '請輸入區域代碼',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _codeController,
+                            decoration: InputDecoration(
+                              labelText: '區域代號',
+                              hintText: '例如：A01',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[50],
+                              prefixIcon: const Icon(Icons.location_on),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                            ),
+                            textCapitalization: TextCapitalization.characters,
+                            style: const TextStyle(fontSize: 24),
+                            textAlign: TextAlign.center,
+                            validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '請輸入區域代號';
                   }
                   if (!_brailleUtils.isValidCode(value.toUpperCase())) {
                     return '請輸入正確的格式（例如：B12）';
-                  }
-                  return null;
+                  }                  return null;
                 },
+                onFieldSubmitted: (_) => _submitCode(),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitCode,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton.icon(
+                              onPressed: _submitCode,
+                              icon: const Icon(Icons.search, size: 28),
+                              label: const Text(
+                                '查詢',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text('查詢'),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              '輸入位於商品旁的區域代碼',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '例如：A01',
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

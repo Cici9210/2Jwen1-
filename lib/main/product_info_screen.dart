@@ -68,96 +68,274 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
       }
     }    await _voice.speak(speechText);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('商品資訊'),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: _isLoading 
-        ? const Center(child: CircularProgressIndicator())
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                    strokeWidth: 3,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  '正在搜尋區域資訊...',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          )
         : _error != null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _error!,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('返回'),
-                  ),
-                ],
+          ? Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.red.withOpacity(0.1),
+                    Colors.white,
+                  ],
+                ),
               ),
-            )
-          : _area == null
-            ? const Center(child: Text('找不到該區域資訊'))
-            : Padding(
-                padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: 80,
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        _error!,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: 200,
+                        height: 50,
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back),
+                          label: const Text('返回', style: TextStyle(fontSize: 18)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )          : _area == null
+            ? const Center(
+                child: Text(
+                  '找不到該區域資訊',
+                  style: TextStyle(fontSize: 20),
+                ),
+              )
+            : Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      Colors.white,
+                    ],
+                  ),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '區域：${_area!.name}',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '代碼：${_area!.code}',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '描述：${_area!.description}',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Text(
-                          '商品列表：',
-                          style: Theme.of(context).textTheme.titleLarge,
+                    // 頂部區域資訊卡片
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Theme.of(context).colorScheme.primary,
+                            Theme.of(context).colorScheme.primary.withBlue(220),
+                          ],
                         ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(Icons.volume_up),
-                          tooltip: '語音讀取資訊',
-                          onPressed: () {
-                            if (_area != null) {
-                              _speakAreaInfo(_area!);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: _area!.products.length,
-                        itemBuilder: (context, index) {
-                          final product = _area!.products[index];                          return Card(
-                            child: ListTile(
-                              title: Text(product.name),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('位置：${product.location}'),
-                                  Text('描述：${product.description}'),
-                                ],
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.volume_up),
-                                onPressed: () {
-                                  _voice.speak('${product.name}，位於${product.location}，${product.description}');
-                                },
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '代碼: ${_area!.code}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  icon: const Icon(Icons.volume_up, color: Colors.white),
+                                  tooltip: '語音讀取區域資訊',
+                                  onPressed: () {
+                                    _speakAreaInfo(_area!);
+                                  },
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              _area!.name,
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ),
-                          );
-                        },
+                            const SizedBox(height: 8),
+                            Text(
+                              _area!.description,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),                          ],
+                        ),
                       ),
+                    ),
+                    
+                    // 商品列表標題
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                      child: Text(
+                        '商品列表',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                    
+                    // 商品列表
+                    Expanded(
+                      child: _area!.products.isEmpty
+                          ? const Center(child: Text('此區域沒有商品'))
+                          : ListView.builder(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              itemCount: _area!.products.length,
+                              itemBuilder: (context, index) {
+                                final product = _area!.products[index];
+                                return Card(
+                                  elevation: 4,
+                                  margin: const EdgeInsets.only(bottom: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(16),
+                                    onTap: () {
+                                      _voice.speak('${product.name}，位於${product.location}，${product.description}');
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: 60,
+                                            height: 60,
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                product.location,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                  color: Theme.of(context).colorScheme.primary,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  product.name,
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  product.description,
+                                                  style: TextStyle(
+                                                    color: Colors.grey[700],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),                                          IconButton(
+                                            icon: const Icon(Icons.volume_up),
+                                            tooltip: '語音讀取商品資訊',
+                                            onPressed: () {
+                                              _voice.speak('${product.name}，位於${product.location}，${product.description}');
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),

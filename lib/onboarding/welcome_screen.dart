@@ -16,11 +16,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     super.initState();
     _playWelcomeMessage();
   }
-
   Future<void> _playWelcomeMessage() async {
-    await _voice.speak('歡迎使用數字點點導引系統，請點擊畫面任意處開始使用');
+    await _voice.speak('歡迎使用摸索點點導引系統，請點擊畫面任意處開始使用');
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,23 +26,79 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         onTap: () => Navigator.pushReplacementNamed(context, '/home'),
         child: Container(
           width: double.infinity,
-          color: Colors.white,
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '數字點點導引系統',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                Theme.of(context).colorScheme.primary,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.location_searching,
+                  size: 80,
+                  color: Colors.white,
                 ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                '點擊畫面任意處開始使用',
-                style: TextStyle(fontSize: 18),
-              ),
-            ],
+                const SizedBox(height: 30),
+                const Text(
+                  '摸索點點導引系統',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 2,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        offset: Offset(2, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: const Text(
+                    '點擊畫面任意處開始使用',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.touch_app, color: Colors.white70),
+                    SizedBox(width: 8),
+                    Text(
+                      '智能商場導覽',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                    SizedBox(width: 20),
+                    Icon(Icons.accessibility_new, color: Colors.white70),
+                    SizedBox(width: 8),
+                    Text(
+                      '無障礙設計',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

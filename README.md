@@ -1,8 +1,6 @@
 # dotnav
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
+一個用Flutterr編輯的商場導引系統
+主要功能：
+  搭配實體標誌尋找商品，及確認售價及商品狀態
 
